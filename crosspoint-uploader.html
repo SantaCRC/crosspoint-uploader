@@ -1,0 +1,350 @@
+<!doctype html>
+<html lang="es" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CrossPoint Binary Uploader</title>
+  <link rel="preconnect" href="https://api.fontshare.com" />
+  <link href="https://api.fontshare.com/v2/css?f[]=satoshi@400,500,700&f[]=boska@500,700&display=swap" rel="stylesheet" />
+  <style>
+    :root, [data-theme="light"] {
+      --text-xs: clamp(0.75rem, 0.7rem + 0.25vw, 0.875rem);
+      --text-sm: clamp(0.875rem, 0.8rem + 0.35vw, 1rem);
+      --text-base: clamp(1rem, 0.95rem + 0.25vw, 1.125rem);
+      --text-lg: clamp(1.125rem, 1rem + 0.75vw, 1.5rem);
+      --text-xl: clamp(1.5rem, 1.2rem + 1.25vw, 2rem);
+      --space-1: 0.25rem; --space-2: 0.5rem; --space-3: 0.75rem; --space-4: 1rem; --space-5: 1.25rem; --space-6: 1.5rem; --space-8: 2rem; --space-10: 2.5rem; --space-12: 3rem;
+      --color-bg: #f7f6f2; --color-surface: #f9f8f5; --color-surface-2: #fbfbf9; --color-surface-offset: #f3f0ec; --color-border: #d4d1ca;
+      --color-text: #28251d; --color-text-muted: #7a7974; --color-text-faint: #bab9b4; --color-text-inverse: #f9f8f4;
+      --color-primary: #01696f; --color-primary-hover: #0c4e54; --color-primary-highlight: #cedcd8;
+      --color-success: #437a22; --color-success-highlight: #d4dfcc; --color-error: #a12c7b; --color-error-highlight: #e0ced7; --color-warning: #964219; --color-warning-highlight: #ddcfc6;
+      --radius-sm: 0.375rem; --radius-md: 0.5rem; --radius-lg: 0.75rem; --radius-xl: 1rem;
+      --shadow-sm: 0 1px 2px rgba(20,20,20,0.06); --shadow-md: 0 12px 32px rgba(20,20,20,0.1);
+      --transition-interactive: 180ms cubic-bezier(0.16, 1, 0.3, 1);
+      --font-body: 'Satoshi', Inter, sans-serif; --font-display: 'Boska', Georgia, serif;
+    }
+    [data-theme="dark"] {
+      --color-bg: #171614; --color-surface: #1c1b19; --color-surface-2: #201f1d; --color-surface-offset: #1d1c1a; --color-border: #393836;
+      --color-text: #cdccca; --color-text-muted: #979694; --color-text-faint: #6b6a68; --color-text-inverse: #2b2a28;
+      --color-primary: #4f98a3; --color-primary-hover: #227f8b; --color-primary-highlight: #313b3b;
+      --color-success: #6daa45; --color-success-highlight: #3a4435; --color-error: #d163a7; --color-error-highlight: #4c3d46; --color-warning: #bb653b; --color-warning-highlight: #564942;
+      --shadow-sm: 0 1px 2px rgba(0,0,0,0.2); --shadow-md: 0 12px 32px rgba(0,0,0,0.35);
+    }
+    *,:before,:after{box-sizing:border-box;margin:0;padding:0}
+    html{-webkit-font-smoothing:antialiased;scroll-behavior:smooth}
+    body{min-height:100dvh;font-family:var(--font-body);font-size:var(--text-base);line-height:1.6;background:
+      radial-gradient(circle at top right, color-mix(in oklab, var(--color-primary) 12%, transparent), transparent 28%),
+      var(--color-bg);color:var(--color-text)}
+    button,input,select{font:inherit;color:inherit}
+    button{cursor:pointer;border:none;background:none}
+    a{color:inherit}
+    :focus-visible{outline:2px solid var(--color-primary);outline-offset:3px;border-radius:var(--radius-sm)}
+    .shell{max-width:1100px;margin:0 auto;padding:var(--space-6)}
+    .skip{position:absolute;left:-9999px;top:auto}.skip:focus{left:var(--space-4);top:var(--space-4);background:var(--color-surface);padding:var(--space-3);z-index:10;border-radius:var(--radius-md)}
+    header{display:flex;justify-content:space-between;align-items:center;gap:var(--space-4);margin-bottom:var(--space-8)}
+    .brand{display:flex;align-items:center;gap:var(--space-3)}
+    .logo{width:42px;height:42px;border-radius:12px;background:linear-gradient(135deg,var(--color-primary),color-mix(in oklab,var(--color-primary) 55%, var(--color-surface)));display:grid;place-items:center;color:var(--color-text-inverse);box-shadow:var(--shadow-sm)}
+    .brand h1{font-family:var(--font-display);font-size:var(--text-xl);line-height:1}
+    .muted{color:var(--color-text-muted)}
+    .hero{display:grid;grid-template-columns:1.2fr 0.8fr;gap:var(--space-6);margin-bottom:var(--space-6)}
+    .panel{background:color-mix(in oklab,var(--color-surface) 88%, transparent);border:1px solid color-mix(in oklab,var(--color-text) 12%, transparent);border-radius:var(--radius-xl);box-shadow:var(--shadow-sm);backdrop-filter:blur(10px)}
+    .hero-copy,.hero-side,.form-card,.log-card{padding:var(--space-6)}
+    .eyebrow{font-size:var(--text-xs);text-transform:uppercase;letter-spacing:.14em;color:var(--color-text-muted);margin-bottom:var(--space-3)}
+    .hero p{max-width:58ch}
+    .hero-actions{display:flex;flex-wrap:wrap;gap:var(--space-3);margin-top:var(--space-5)}
+    .btn{display:inline-flex;align-items:center;justify-content:center;gap:var(--space-2);min-height:44px;padding:0.8rem 1rem;border-radius:999px;border:1px solid transparent;transition:all var(--transition-interactive)}
+    .btn-primary{background:var(--color-primary);color:var(--color-text-inverse)} .btn-primary:hover{background:var(--color-primary-hover)}
+    .btn-secondary{background:var(--color-surface-2);border-color:color-mix(in oklab,var(--color-text) 12%, transparent)}
+    .grid{display:grid;grid-template-columns:1fr 1fr;gap:var(--space-6)}
+    .field{display:grid;gap:var(--space-2);margin-bottom:var(--space-4)}
+    label{font-size:var(--text-sm);font-weight:700}
+    input{width:100%;min-height:46px;padding:0.85rem 0.95rem;background:var(--color-surface-2);border:1px solid var(--color-border);border-radius:var(--radius-md)}
+    input::placeholder{color:var(--color-text-faint)}
+    .hint{font-size:var(--text-xs);color:var(--color-text-muted)}
+    .status-row,.meta{display:grid;gap:var(--space-3)}
+    .meta-item{padding:var(--space-4);background:var(--color-surface-offset);border-radius:var(--radius-lg);border:1px solid color-mix(in oklab,var(--color-text) 10%, transparent)}
+    .meta-item strong{display:block;font-size:var(--text-sm)}
+    .progress{margin-top:var(--space-5)}
+    .progress-bar{width:100%;height:14px;background:var(--color-surface-offset);border-radius:999px;overflow:hidden;border:1px solid color-mix(in oklab,var(--color-text) 8%, transparent)}
+    .progress-fill{height:100%;width:0;background:linear-gradient(90deg,var(--color-primary),color-mix(in oklab,var(--color-primary) 55%, white));transition:width 160ms linear}
+    .chips{display:flex;flex-wrap:wrap;gap:var(--space-2);margin-top:var(--space-4)}
+    .chip{padding:0.35rem 0.7rem;border-radius:999px;font-size:var(--text-xs);background:var(--color-primary-highlight);color:var(--color-text)}
+    .log{min-height:260px;max-height:360px;overflow:auto;background:var(--color-surface-2);padding:var(--space-4);border-radius:var(--radius-lg);border:1px solid color-mix(in oklab,var(--color-text) 10%, transparent);font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:0.92rem}
+    .log-line{padding:0.2rem 0;border-bottom:1px solid color-mix(in oklab,var(--color-text) 8%, transparent)}
+    .log-line:last-child{border-bottom:none}
+    .ok{color:var(--color-success)} .warn{color:var(--color-warning)} .err{color:var(--color-error)}
+    .footer-note{margin-top:var(--space-5);font-size:var(--text-sm);color:var(--color-text-muted)}
+    @media (max-width: 860px){.hero,.grid{grid-template-columns:1fr}.shell{padding:var(--space-4)}header{align-items:flex-start;flex-direction:column}}
+  </style>
+</head>
+<body>
+  <a class="skip" href="#main">Saltar al contenido</a>
+  <div class="shell">
+    <header>
+      <div class="brand">
+        <div class="logo" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-label="CrossPoint logo">
+            <path d="M5 12h14"></path><path d="M12 5v14"></path><circle cx="12" cy="12" r="8"></circle>
+          </svg>
+        </div>
+        <div>
+          <h1>CrossPoint Uploader</h1>
+          <p class="muted">Subida binaria directa por WebSocket, sin servidor propio.</p>
+        </div>
+      </div>
+      <button class="btn btn-secondary" type="button" data-theme-toggle aria-label="Cambiar tema">
+        <span aria-hidden="true">◐</span>
+        <span>Tema</span>
+      </button>
+    </header>
+
+    <main id="main">
+      <section class="hero">
+        <div class="panel hero-copy">
+          <div class="eyebrow">WebSocket binary upload</div>
+          <p>Esta app abre una conexión a <strong>ws://crosspoint.local:81/</strong>, envía el mensaje <strong>START:&lt;filename&gt;:&lt;size&gt;:&lt;path&gt;</strong>, espera <strong>READY</strong> y después transmite el archivo en bloques binarios. Está pensada para correr solo en el navegador, usando HTML + CSS + JavaScript.</p>
+          <div class="hero-actions">
+            <button class="btn btn-primary" type="button" id="connectBtn">Conectar</button>
+            <button class="btn btn-secondary" type="button" id="disconnectBtn">Desconectar</button>
+          </div>
+          <div class="chips">
+            <span class="chip">Sin backend</span>
+            <span class="chip">Chunks binarios</span>
+            <span class="chip">Progreso en vivo</span>
+            <span class="chip">Sobrescribe archivos existentes</span>
+          </div>
+        </div>
+        <aside class="panel hero-side">
+          <div class="status-row">
+            <div class="meta-item"><strong>Estado</strong><span id="connectionState">Desconectado</span></div>
+            <div class="meta-item"><strong>Servidor</strong><span id="serverUrl">ws://crosspoint.local:81/</span></div>
+            <div class="meta-item"><strong>Protocolo</strong><span>START → READY → BINARY → PROGRESS → DONE</span></div>
+          </div>
+        </aside>
+      </section>
+
+      <section class="grid">
+        <form class="panel form-card" id="uploadForm">
+          <div class="field">
+            <label for="wsUrl">WebSocket URL</label>
+            <input id="wsUrl" value="ws://crosspoint.local:81/" placeholder="ws://crosspoint.local:81/" />
+            <div class="hint">En algunos navegadores, un origen HTTPS no puede abrir <code>ws://</code>. Si pasa eso, abre la app en HTTP/local o usa <code>wss://</code> si tu dispositivo lo soporta.</div>
+          </div>
+          <div class="field">
+            <label for="targetPath">Ruta destino</label>
+            <input id="targetPath" value="/Books" placeholder="/Books" />
+          </div>
+          <div class="field">
+            <label for="fileInput">Archivo</label>
+            <input id="fileInput" type="file" />
+          </div>
+          <div class="field">
+            <label for="chunkSize">Tamaño de chunk (bytes)</label>
+            <input id="chunkSize" type="number" min="4096" step="4096" value="65536" />
+            <div class="hint">64 KB encaja bien con las actualizaciones de progreso descritas por el dispositivo.</div>
+          </div>
+          <div class="hero-actions">
+            <button class="btn btn-primary" type="submit" id="uploadBtn">Subir archivo</button>
+            <button class="btn btn-secondary" type="button" id="resetBtn">Limpiar</button>
+          </div>
+          <div class="progress">
+            <div class="meta-item" style="margin-bottom:var(--space-3)">
+              <strong>Progreso</strong>
+              <span id="progressText">0 / 0 bytes</span>
+            </div>
+            <div class="progress-bar" aria-hidden="true"><div class="progress-fill" id="progressFill"></div></div>
+          </div>
+          <p class="footer-note">Si el socket se corta durante la subida, el dispositivo indica que borrará el archivo incompleto.</p>
+        </form>
+
+        <section class="panel log-card" aria-labelledby="logTitle">
+          <div class="field" style="margin-bottom:var(--space-3)">
+            <h2 id="logTitle" style="font-size:var(--text-lg)">Eventos</h2>
+            <p class="hint">Registro del handshake, progreso y errores del servidor.</p>
+          </div>
+          <div class="log" id="log" role="log" aria-live="polite"></div>
+        </section>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    (() => {
+      const html = document.documentElement;
+      const toggle = document.querySelector('[data-theme-toggle]');
+      let theme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+      html.setAttribute('data-theme', theme);
+      toggle?.addEventListener('click', () => {
+        theme = theme === 'dark' ? 'light' : 'dark';
+        html.setAttribute('data-theme', theme);
+      });
+
+      const els = {
+        wsUrl: document.getElementById('wsUrl'),
+        targetPath: document.getElementById('targetPath'),
+        fileInput: document.getElementById('fileInput'),
+        chunkSize: document.getElementById('chunkSize'),
+        uploadForm: document.getElementById('uploadForm'),
+        connectBtn: document.getElementById('connectBtn'),
+        disconnectBtn: document.getElementById('disconnectBtn'),
+        uploadBtn: document.getElementById('uploadBtn'),
+        resetBtn: document.getElementById('resetBtn'),
+        connectionState: document.getElementById('connectionState'),
+        progressText: document.getElementById('progressText'),
+        progressFill: document.getElementById('progressFill'),
+        log: document.getElementById('log')
+      };
+
+      let socket = null;
+      let upload = null;
+
+      function addLog(message, cls = '') {
+        const line = document.createElement('div');
+        line.className = `log-line ${cls}`.trim();
+        line.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+        els.log.prepend(line);
+      }
+
+      function setState(text) {
+        els.connectionState.textContent = text;
+      }
+
+      function setProgress(received, total) {
+        const safeTotal = Number(total) || 0;
+        const safeReceived = Number(received) || 0;
+        els.progressText.textContent = `${safeReceived.toLocaleString()} / ${safeTotal.toLocaleString()} bytes`;
+        els.progressFill.style.width = safeTotal ? `${Math.min(100, (safeReceived / safeTotal) * 100)}%` : '0%';
+      }
+
+      function cleanupSocket() {
+        if (socket) {
+          socket.onopen = null; socket.onclose = null; socket.onerror = null; socket.onmessage = null;
+        }
+        socket = null;
+      }
+
+      function connect() {
+        if (socket && socket.readyState === WebSocket.OPEN) {
+          addLog('Ya hay una conexión abierta.', 'warn');
+          return Promise.resolve(socket);
+        }
+        return new Promise((resolve, reject) => {
+          try {
+            const ws = new WebSocket(els.wsUrl.value.trim());
+            ws.binaryType = 'arraybuffer';
+            setState('Conectando…');
+            addLog(`Abriendo conexión a ${els.wsUrl.value.trim()}`);
+            ws.onopen = () => {
+              socket = ws;
+              attachSocketHandlers(ws);
+              setState('Conectado');
+              addLog('Conexión abierta.', 'ok');
+              resolve(ws);
+            };
+            ws.onerror = () => {
+              addLog('Error de WebSocket.', 'err');
+            };
+            ws.onclose = () => {
+              setState('Desconectado');
+              addLog('Conexión cerrada.', 'warn');
+              cleanupSocket();
+            };
+          } catch (err) {
+            reject(err);
+          }
+        });
+      }
+
+      function attachSocketHandlers(ws) {
+        ws.onmessage = async (event) => {
+          if (typeof event.data !== 'string') {
+            addLog('Se recibió un frame no textual del servidor.', 'warn');
+            return;
+          }
+          const msg = event.data;
+          if (msg === 'READY') {
+            addLog('Servidor listo. Comienza la subida.', 'ok');
+            if (upload && !upload.started) {
+              upload.started = true;
+              await sendChunks();
+            }
+            return;
+          }
+          if (msg.startsWith('PROGRESS:')) {
+            const [, received, total] = msg.split(':');
+            setProgress(Number(received), Number(total));
+            addLog(`Progreso ${received}/${total}`);
+            return;
+          }
+          if (msg === 'DONE') {
+            setProgress(upload?.file?.size || 0, upload?.file?.size || 0);
+            addLog('Subida completada.', 'ok');
+            upload = null;
+            els.uploadBtn.disabled = false;
+            return;
+          }
+          if (msg.startsWith('ERROR:')) {
+            addLog(msg, 'err');
+            upload = null;
+            els.uploadBtn.disabled = false;
+            return;
+          }
+          addLog(`Mensaje del servidor: ${msg}`);
+        };
+      }
+
+      async function sendChunks() {
+        if (!socket || socket.readyState !== WebSocket.OPEN || !upload) return;
+        const { file, chunkSize } = upload;
+        let offset = 0;
+        while (offset < file.size) {
+          const chunk = await file.slice(offset, offset + chunkSize).arrayBuffer();
+          socket.send(chunk);
+          offset += chunk.byteLength;
+          setProgress(offset, file.size);
+          await new Promise(r => setTimeout(r, 0));
+        }
+        addLog('Todos los chunks fueron enviados; esperando confirmación final.');
+      }
+
+      async function startUpload(event) {
+        event.preventDefault();
+        const file = els.fileInput.files?.[0];
+        const path = els.targetPath.value.trim() || '/';
+        const chunkSize = Math.max(4096, Number(els.chunkSize.value) || 65536);
+        if (!file) {
+          addLog('Selecciona un archivo antes de subir.', 'err');
+          return;
+        }
+        try {
+          const ws = await connect();
+          upload = { file, chunkSize, started: false };
+          els.uploadBtn.disabled = true;
+          setProgress(0, file.size);
+          const startMessage = `START:${file.name}:${file.size}:${path}`;
+          addLog(`Enviando ${startMessage}`);
+          ws.send(startMessage);
+        } catch (err) {
+          addLog(`No se pudo iniciar la conexión: ${err.message}`, 'err');
+          els.uploadBtn.disabled = false;
+        }
+      }
+
+      els.connectBtn.addEventListener('click', () => connect().catch(err => addLog(err.message, 'err')));
+      els.disconnectBtn.addEventListener('click', () => {
+        if (socket) socket.close();
+        upload = null;
+        els.uploadBtn.disabled = false;
+      });
+      els.uploadForm.addEventListener('submit', startUpload);
+      els.resetBtn.addEventListener('click', () => {
+        els.fileInput.value = '';
+        setProgress(0, 0);
+        upload = null;
+        addLog('Formulario reiniciado.');
+      });
+      addLog('App lista. Selecciona archivo y conecta cuando quieras.');
+    })();
+  </script>
+</body>
+</html>
