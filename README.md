@@ -3,6 +3,8 @@ CrossPoint Uploader
 
 Simple WebSocket file uploader (front-end demo).
 
+[![pages-build-deployment](https://github.com/SantaCRC/crosspoint-uploader/actions/workflows/pages/pages-build-deployment/badge.svg)](https://github.com/SantaCRC/crosspoint-uploader/actions/workflows/pages/pages-build-deployment)
+
 Resumen
 - Interfaz: `crosspoint-uploader.html` (HTML + vanilla JS + Tailwind).
 - Protocolo: envía `START:<filename>:<size>:<path>` por WebSocket, luego frames binarios con progreso y mensajes `PROGRESS`/`DONE`.
