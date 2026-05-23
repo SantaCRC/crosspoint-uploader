@@ -43,6 +43,14 @@
     <main class="mx-auto grid max-w-6xl gap-6 px-4 pb-1 sm:px-6 lg:grid-cols-3 lg:px-8">
       <section class="rounded-2xl border border-stone-400 bg-paper/90 p-5 shadow-glow lg:col-span-2">
         <form id="uploadForm" class="space-y-4">
+          <div>
+            <label for="sourceType" class="mb-1 block text-sm font-medium text-stone-900" data-i18n="sourceLabel">Source</label>
+            <select id="sourceType" class="w-full rounded-lg border border-stone-400 bg-stone-100 px-3 py-2 text-stone-900 focus:border-stone-600 focus:outline-none">
+              <option value="local" data-i18n-option="localSource">Local file</option>
+              <option value="url" data-i18n-option="urlSource">From URL</option>
+            </select>
+          </div>
+
           <div class="grid gap-4 sm:grid-cols-2">
             <div>
               <label for="wsUrl" class="mb-1 block text-sm font-medium text-stone-900" data-i18n="wsUrlLabel">WebSocket URL</label>
@@ -54,17 +62,24 @@
             </div>
           </div>
 
-          <div class="grid gap-4 sm:grid-cols-1">
+          <div id="localUploadPanel" class="grid gap-4 sm:grid-cols-1">
             <div>
               <label for="fileInput" class="mb-1 block text-sm font-medium text-stone-900" data-i18n="fileLabel">File</label>
               <input id="fileInput" type="file" class="w-full rounded-lg border border-stone-400 bg-stone-100 px-3 py-2 text-sm text-stone-800 file:mr-4 file:rounded-md file:border file:border-stone-500 file:bg-stone-300 file:px-3 file:py-2 file:text-sm file:font-semibold file:text-stone-900 hover:file:bg-stone-200" />
             </div>
           </div>
 
+          <div id="remoteUploadPanel" class="hidden grid gap-4 sm:grid-cols-2">
+            <div>
+              <label for="remoteUrl" class="mb-1 block text-sm font-medium text-stone-900" data-i18n="remoteUrlLabel">File URL</label>
+              <input id="remoteUrl" type="url" class="w-full rounded-lg border border-stone-400 bg-stone-100 px-3 py-2 text-stone-900 placeholder-stone-500 focus:border-stone-600 focus:outline-none" placeholder="https://example.com/book.epub" />
+            </div>
+          </div>
+
           <div class="flex flex-wrap gap-3">
             <button id="connectBtn" type="button" class="rounded-lg bg-stone-800 px-4 py-2 font-semibold text-stone-100 transition hover:bg-stone-700" data-i18n="connectBtn">Connect</button>
             <button id="disconnectBtn" type="button" class="rounded-lg bg-stone-500 px-4 py-2 font-semibold text-stone-100 transition hover:bg-stone-600" data-i18n="disconnectBtn">Disconnect</button>
-            <button id="uploadBtn" type="submit" class="rounded-lg bg-zinc-700 px-4 py-2 font-semibold text-stone-100 transition hover:bg-zinc-600" data-i18n="uploadBtn">Upload file</button>
+            <button id="uploadBtn" type="submit" class="rounded-lg bg-zinc-700 px-4 py-2 font-semibold text-stone-100 transition hover:bg-zinc-600" data-i18n="uploadBtn">Upload</button>
             <button id="resetBtn" type="button" class="rounded-lg border border-stone-500 px-4 py-2 font-semibold text-stone-800 transition hover:border-stone-600 hover:bg-stone-300" data-i18n="resetBtn">Reset</button>
           </div>
         </form>
@@ -109,12 +124,16 @@
           heroKicker: 'WebSocket binary upload',
           heroSubtitle: 'Every book you upload is a door you open — and the threshold is always waiting.',
           languageLabel: 'Language',
+          sourceLabel: 'Source',
+          localSource: 'Local file',
+          urlSource: 'From URL',
           wsUrlLabel: 'WebSocket URL',
           targetPathLabel: 'Target path',
           fileLabel: 'File',
+          remoteUrlLabel: 'File URL',
           connectBtn: 'Connect',
           disconnectBtn: 'Disconnect',
-          uploadBtn: 'Upload file',
+          uploadBtn: 'Upload',
           resetBtn: 'Reset',
           progressLabel: 'Progress',
           statusTitle: 'Connection',
@@ -132,6 +151,7 @@
           closedDuringUpload: 'Connection closed during upload. Incomplete file may be removed by device.',
           closedAfterAllSentUnconfirmed: 'All chunks were sent, but server did not confirm DONE/PROGRESS completion. Upload not confirmed.',
           uploadNoFile: 'Select a file before uploading.',
+          uploadNoUrl: 'Enter a file URL before uploading.',
           invalidFilename: 'File name cannot contain ":" for this START protocol.',
           mkdirSending: 'Ensuring destination path exists via POST /mkdir: {path}',
           mkdirReady: 'Destination path is ready: {path}',
@@ -139,6 +159,10 @@
           mkdirFolderExists: 'Folder already exists: {parent}/{name}',
           mkdirFailed: 'Could not prepare destination path: {message}',
           mkdirBestEffortContinue: 'Could not verify POST /mkdir from browser (CORS/network). Continuing upload in best-effort mode.',
+          remoteFetchStart: 'Downloading file from {url}',
+          remoteFetchDone: 'Remote file ready: {filename}',
+          remoteFetchError: 'Could not load the URL: {message}',
+          remoteFetchHtml: 'The URL returned an HTML page, not a downloadable file.',
           startSending: 'Sending {start}',
           readyStart: 'Server ready. Upload started.',
           progressLine: 'Progress {received}/{total}',
@@ -154,12 +178,16 @@
           heroKicker: 'Subida binaria por WebSocket',
           heroSubtitle: 'Cada libro que subes es una puerta que abres — y el umbral siempre te espera.',
           languageLabel: 'Idioma',
+          sourceLabel: 'Origen',
+          localSource: 'Archivo local',
+          urlSource: 'Desde URL',
           wsUrlLabel: 'URL WebSocket',
           targetPathLabel: 'Ruta destino',
           fileLabel: 'Archivo',
+          remoteUrlLabel: 'URL del archivo',
           connectBtn: 'Conectar',
           disconnectBtn: 'Desconectar',
-          uploadBtn: 'Subir archivo',
+          uploadBtn: 'Subir',
           resetBtn: 'Limpiar',
           progressLabel: 'Progreso',
           statusTitle: 'Conexion',
@@ -177,6 +205,7 @@
           closedDuringUpload: 'Conexion cerrada durante una subida. El archivo incompleto puede eliminarse en el dispositivo.',
           closedAfterAllSentUnconfirmed: 'Se enviaron todos los chunks, pero el servidor no confirmo DONE/PROGRESS completo. Subida no confirmada.',
           uploadNoFile: 'Selecciona un archivo antes de subir.',
+          uploadNoUrl: 'Ingresa una URL de archivo antes de subir.',
           invalidFilename: 'El nombre del archivo no puede contener ":" para este protocolo START.',
           mkdirSending: 'Asegurando que exista la ruta destino via POST /mkdir: {path}',
           mkdirReady: 'Ruta destino lista: {path}',
@@ -184,6 +213,10 @@
           mkdirFolderExists: 'La carpeta ya existe: {parent}/{name}',
           mkdirFailed: 'No se pudo preparar la ruta destino: {message}',
           mkdirBestEffortContinue: 'No se pudo verificar POST /mkdir desde el navegador (CORS/red). Se continua la subida en modo best-effort.',
+          remoteFetchStart: 'Descargando archivo desde {url}',
+          remoteFetchDone: 'Archivo remoto listo: {filename}',
+          remoteFetchError: 'No se pudo cargar la URL: {message}',
+          remoteFetchHtml: 'La URL devolvio una pagina HTML, no un archivo descargable.',
           startSending: 'Enviando {start}',
           readyStart: 'Servidor listo. Comienza la subida.',
           progressLine: 'Progreso {received}/{total}',
@@ -199,9 +232,13 @@
 
       const els = {
         languageSelect: document.getElementById('languageSelect'),
+        sourceType: document.getElementById('sourceType'),
         wsUrl: document.getElementById('wsUrl'),
         targetPath: document.getElementById('targetPath'),
         fileInput: document.getElementById('fileInput'),
+        remoteUrl: document.getElementById('remoteUrl'),
+        localUploadPanel: document.getElementById('localUploadPanel'),
+        remoteUploadPanel: document.getElementById('remoteUploadPanel'),
         uploadForm: document.getElementById('uploadForm'),
         connectBtn: document.getElementById('connectBtn'),
         disconnectBtn: document.getElementById('disconnectBtn'),
@@ -243,6 +280,18 @@
           const key = node.getAttribute('data-i18n');
           node.textContent = t(key);
         });
+
+        document.querySelectorAll('[data-i18n-option]').forEach(node => {
+          const key = node.getAttribute('data-i18n-option');
+          node.textContent = t(key);
+        });
+      }
+
+      function updateSourceUI() {
+        const isRemote = els.sourceType.value === 'url';
+        els.remoteUploadPanel.classList.toggle('hidden', !isRemote);
+        els.fileInput.disabled = isRemote;
+        els.remoteUrl.disabled = !isRemote;
       }
 
       function addLog(message, cls = '') {
@@ -268,6 +317,49 @@
         if (!raw || raw === '/') return '/';
         const prefixed = raw.startsWith('/') ? raw : `/${raw}`;
         return prefixed.replace(/\/+$/g, '') || '/';
+      }
+
+      function deriveFilenameFromUrl(urlValue) {
+        try {
+          const parsed = new URL(urlValue);
+          const lastPart = parsed.pathname.split('/').filter(Boolean).pop();
+          if (!lastPart) return 'download.bin';
+          return decodeURIComponent(lastPart);
+        } catch {
+          return 'download.bin';
+        }
+      }
+
+      function deriveFilenameFromResponse(response, fallbackUrl) {
+        const contentDisposition = response.headers.get('content-disposition') || '';
+        const filenameMatch = contentDisposition.match(/filename\*?=(?:UTF-8''|\")?([^\";]+)\"?/i);
+        if (filenameMatch?.[1]) {
+          try {
+            return decodeURIComponent(filenameMatch[1].replace(/^\"|\"$/g, ''));
+          } catch {
+            return filenameMatch[1].replace(/^\"|\"$/g, '');
+          }
+        }
+
+        return deriveFilenameFromUrl(response.url || fallbackUrl);
+      }
+
+      async function loadRemoteFile(urlValue) {
+        addLog(t('remoteFetchStart', { url: urlValue }), 'text-stone-700');
+        const response = await fetch(urlValue);
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}`);
+        }
+
+        const contentType = (response.headers.get('content-type') || '').toLowerCase();
+        if (contentType.includes('text/html')) {
+          throw new Error(t('remoteFetchHtml'));
+        }
+
+        const blob = await response.blob();
+        const filename = deriveFilenameFromResponse(response, urlValue);
+        addLog(t('remoteFetchDone', { filename }), 'text-stone-700');
+        return new File([blob], filename, { type: blob.type || 'application/octet-stream' });
       }
 
       function cleanupSocket() {
@@ -494,14 +586,32 @@
       async function startUpload(event) {
         event.preventDefault();
 
-        const file = els.fileInput.files?.[0];
+        const isRemote = els.sourceType.value === 'url';
         const path = normalizePath(els.targetPath.value.trim() || '/');
         const chunkSize = 1024;
         const sendDelay = 8;
+        let file = null;
 
-        if (!file) {
-          addLog(t('uploadNoFile'), 'text-stone-900');
-          return;
+        if (isRemote) {
+          const remoteUrl = els.remoteUrl.value.trim();
+          if (!remoteUrl) {
+            addLog(t('uploadNoUrl'), 'text-stone-900');
+            return;
+          }
+
+          try {
+            file = await loadRemoteFile(remoteUrl);
+          } catch (err) {
+            const message = err && err.message ? err.message : String(err);
+            addLog(t('remoteFetchError', { message }), 'text-stone-900');
+            return;
+          }
+        } else {
+          file = els.fileInput.files?.[0] || null;
+          if (!file) {
+            addLog(t('uploadNoFile'), 'text-stone-900');
+            return;
+          }
         }
 
         if (file.name.includes(':')) {
@@ -551,6 +661,8 @@
         applyLanguage(event.target.value);
       });
 
+      els.sourceType.addEventListener('change', updateSourceUI);
+
       els.connectBtn.addEventListener('click', () => {
         connect().catch(err => {
           const message = err && err.message ? err.message : String(err);
@@ -567,12 +679,14 @@
 
       els.resetBtn.addEventListener('click', () => {
         els.fileInput.value = '';
+        els.remoteUrl.value = '';
         setProgress(0, 0);
         resetUploadState();
         addLog(t('formReset'), 'text-stone-700');
       });
 
       applyLanguage(detectInitialLanguage());
+      updateSourceUI();
       setState('stateDisconnected');
       addLog(t('appReady'), 'text-stone-700');
     })();
