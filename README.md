@@ -14,5 +14,4 @@ Resumen
 
 Notas
 - El cliente validará que el nombre no contenga `:` antes de enviar `START`.
-- Si el dispositivo destino no expone `/mkdir`, la subida aún se intenta (fallback).
-- Para pruebas automatizadas o CLI existe `validate_ws_upload.sh` (si está presente) — úsalo en el host que pueda abrir WebSocket al dispositivo.
+- Si el dispositivo destino no expone `/mkdir`, la subida aún se intenta (fallback)
